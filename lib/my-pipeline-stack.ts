@@ -24,6 +24,17 @@ export class MyPipelineStack extends cdk.Stack {
 
     betaStage.addPost(new ManualApprovalStep('approval'));
 
+
+    const source = CodePipelineSource.gitHub('dknoern/my-pipeline', 'main',{
+      authentication: cdk.SecretValue.secretsManager('github-access-token'),
+  });
+
+
+    betaStage.addPost(new ShellStep('validate', {
+      input: source,
+      commands: ['sh ../test/lamda-test.sh']
+    }));
+
     pipeline.addStage(new MyPipelineAppStage(this, "gamma", {
       stageName: "gamma",
       env: { account: "284870623433", region: "us-east-1" }
