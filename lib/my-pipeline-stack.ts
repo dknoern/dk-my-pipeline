@@ -29,11 +29,10 @@ export class MyPipelineStack extends cdk.Stack {
     betaStage.addPost(new ManualApprovalStep('approval'));
 
 
-
-
     betaStage.addPost(new ShellStep('validate', {
       input: source,
-      commands: ['sh ../test/lamda-test.sh']
+      //commands: ['sh ../test/lamda-test.sh']
+      commands: ['sh pwd','sh ls']
     }));
 
     pipeline.addStage(new MyPipelineAppStage(this, "gamma", {
