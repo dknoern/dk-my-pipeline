@@ -18,13 +18,14 @@ export class MyPipelineStack extends cdk.Stack {
       })
     });
 
-    const betaStage = pipeline.addStage(new MyPipelineAppStage(this, "beta", {
+    const betaStage = pipeline.addStage(new MyPipelineAppStage(this, "beta", {stageName: "beta",
       env: { account: "284870623433", region: "us-west-2" }
     }));
 
     betaStage.addPost(new ManualApprovalStep('approval'));
 
     pipeline.addStage(new MyPipelineAppStage(this, "gamma", {
+      stageName: "gamma",
       env: { account: "284870623433", region: "us-east-1" }
     }));
   }
