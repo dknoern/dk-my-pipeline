@@ -8,8 +8,6 @@ export class MyPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-
-
     const source = CodePipelineSource.gitHub('dknoern/my-pipeline', 'main',{
       authentication: cdk.SecretValue.secretsManager('github-access-token'),
   });
@@ -28,11 +26,10 @@ export class MyPipelineStack extends cdk.Stack {
 
     betaStage.addPost(new ManualApprovalStep('approval'));
 
-
     betaStage.addPost(new ShellStep('validate', {
       input: source,
-      //commands: ['sh ../test/lamda-test.sh']
-      commands: ['pwd','ls']
+      commands: ['sh ./test/lamda-test.sh']
+      //commands: ['pwd','ls']
     }));
 
     pipeline.addStage(new MyPipelineAppStage(this, "gamma", {
