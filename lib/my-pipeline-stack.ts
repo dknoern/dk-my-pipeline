@@ -8,12 +8,16 @@ export class MyPipelineStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
+
+
+    const source = CodePipelineSource.gitHub('dknoern/my-pipeline', 'main',{
+      authentication: cdk.SecretValue.secretsManager('github-access-token'),
+  });
+
     const pipeline = new CodePipeline(this, 'Pipeline', {
       pipelineName: 'MyPipeline',
       synth: new ShellStep('Synth', {
-        input: CodePipelineSource.gitHub('dknoern/my-pipeline', 'main',{
-          authentication: cdk.SecretValue.secretsManager('github-access-token'),
-      }),
+        input: source,
         commands: ['npm ci', 'npm run build', 'npx cdk synth']
       })
     });
@@ -25,9 +29,6 @@ export class MyPipelineStack extends cdk.Stack {
     betaStage.addPost(new ManualApprovalStep('approval'));
 
 
-    const source = CodePipelineSource.gitHub('dknoern/my-pipeline', 'main',{
-      authentication: cdk.SecretValue.secretsManager('github-access-token'),
-  });
 
 
     betaStage.addPost(new ShellStep('validate', {
